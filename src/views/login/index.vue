@@ -126,7 +126,7 @@ export default {
         await this.$store.dispatch('user/login', this.loginForm)
       } catch (error) {
         this.loading = false
-        console.log(error)
+        return console.log(error)
       }
       this.loading = false
       // 跳转主页

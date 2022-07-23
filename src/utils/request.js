@@ -1,4 +1,6 @@
 import axios from 'axios';
+import store from '@/store';
+import { Message } from 'element-ui';
 
 // 创建axios实例
 const service = axios.create({
@@ -12,7 +14,8 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
+    const token = store.getters.token;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
 
     return config;
   },
@@ -37,12 +40,18 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    const res = response.data;
-
-
-    return Promise.reject(new Error(res.message || 'Error'));
+    const { success, data, message } = response.data;
+    if (success) {
+      // 业务正确
+      return data;
+    } else {
+      // 业务错误
+      Message.error(message);
+      return Promise.reject(new Error(message));
+    }
 
   },
+  // 请求错误
   error => {
 
     return Promise.reject(error);

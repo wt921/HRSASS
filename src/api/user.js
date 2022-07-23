@@ -7,3 +7,10 @@ export function loginApi(data) {
     data
   });
 }
+export function getUserInfoApi() {
+  return request({
+    url: '/sys/profile',
+    method: 'post',
+
+  });
+}
