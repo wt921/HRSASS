@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from '@/store';
 import { Message } from 'element-ui';
-
+import router from '@/router';
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,//
@@ -54,6 +54,14 @@ service.interceptors.response.use(
   // 请求错误
   error => {
 
+    console.dir(error);
+    if (error.response.status === 401 && error.response.data.code === 10002) {
+      // token过期
+      Message.error('token过期了，请重新登录');
+      store.dispatch('user/quit');
+      router.push('/login');
+
+    }
     return Promise.reject(error);
   }
 );

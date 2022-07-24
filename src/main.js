@@ -20,20 +20,15 @@ import '@/icons'; // icon
 // 导入导航权限守卫
 import '@/permission'; // permission control
 
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online ! ! !
- */
-// if (process.env.NODE_ENV === 'production') {
-//   const { mockXHR } = require('../mock');
-//   mockXHR();
-// }
 
-// set ElementUI lang to EN
+// 读取某个模块里面所以暴露信息
+import * as directive from '@/directive';
+console.log(directive);
+
+// 批量注册自定义指令
+Object.keys(directive).forEach(key => {
+  Vue.directive(key, directive[key]);
+});
 // 给element-ui设置英文语言包
 Vue.use(ElementUI, { locale });
 // 如果想要中文版 element-ui，按如下方式声明

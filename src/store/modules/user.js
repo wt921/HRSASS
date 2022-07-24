@@ -1,4 +1,4 @@
-import { loginApi, getUserInfoApi } from "@/api/user";
+import { loginApi, getUserInfoApi, getUserBaseInfoApi } from "@/api/user";
 import { getToken, setToken, removeToken } from '@/utils/auth';
 const state = {
   token: getToken(),//用户资料
@@ -24,18 +24,31 @@ const mutations = {
   removeUserInfo(state) {
     state.userInfo = {};
   }
+
+
 };
 const actions = {
+  // 登录
   async login(context, data) {
     let token = await loginApi(data);
     context.commit('setToken', token);
   },
+  // 获取用户资料
   async getUserInfo(context) {
     console.log('context', context);
-
+    // 获取用户信息
     let res = await getUserInfoApi();
-    context.commit('setUserInfo', res);
+    let res2 = await getUserBaseInfoApi(res.userId);
+    // context.commit('setUserInfo', res);
     console.log('res', res);
+    // 获取用户信息
+    context.commit('setUserInfo', { ...res, ...res2 });
+  },
+
+  // 退出
+  async quit({ commit }) {
+    commit('removeToken');
+    commit('removeUserInfo');
   }
 };
 export default {
@@ -43,4 +56,5 @@ export default {
   state,
   mutations,
   actions
+
 };

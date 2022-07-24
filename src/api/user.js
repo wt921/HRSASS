@@ -14,3 +14,10 @@ export function getUserInfoApi() {
 
   });
 }
+export function getUserBaseInfoApi(id) {
+  return request({
+    url: '/sys/user/' + id,
+
+
+  });
+}
