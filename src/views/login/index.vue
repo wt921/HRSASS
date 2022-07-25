@@ -1,5 +1,9 @@
 <template>
   <div class="login-container">
+    <!-- element-ui 表单校验三要素 -->
+    <!-- 1、el-form 要有 model、rules、ref -->
+    <!-- 2、el-form-item 要有 prop -->
+    <!-- 3、el-form-input 要有 v-model -->
     <el-form
       ref="loginForm"
       :model="loginForm"
@@ -56,10 +60,10 @@
         :loading="loading"
         type="primary"
         style="width: 100%; margin-bottom: 30px"
+        class="loginBtn"
         @click.native.prevent="handleLogin"
         >Login</el-button
       >
-
       <div class="tips">
         <span style="margin-right: 20px">账号: 13800000002</span>
         <span> 密码: 123456</span>
@@ -70,22 +74,41 @@
 
 <script>
 import { validMobile } from '@/utils/validate'
-
 export default {
   name: 'Login',
   data() {
+    // 手机号的自定义校验
     const mobileValidator = (rule, value, cb) => {
+      // value 是要校验的数据值
+      // cb 回调函数，无论校验成功还是失败都必须执行cb，校验失败传入一个错误实例
       return validMobile(value) ? cb() : cb(new Error('手机号格式不正确'))
     }
+
     return {
+      // 表单数据对象
       loginForm: {
         mobile: '13800000002',
         password: '123456',
       },
+      // 表单验证的规则
       loginRules: {
+        // https://www.npmjs.com/package/async-validator
+        // 字段名:[{校验规则对象}]  校验规则对象：
+        /*
+        {
+          type:"类型",
+          required:是否必须传入,
+          pattern:正则,
+          min:2,max:12,
+          mesage:'提示文字',
+          validator:'自定义校验规则',
+          trigger:'校验执行的时机'
+        }
+        */
         mobile: [
           { required: true, trigger: 'blur', message: '请输入手机号' },
           { validator: mobileValidator, trigger: 'blur' },
+          // { pattern: /^1[3-9]\d{9}$/, message: "格式错误", trigger: "blur" },
         ],
         password: [{ required: true, trigger: 'blur', message: '请输入密码' }],
       },
@@ -114,13 +137,13 @@ export default {
       })
     },
     async handleLogin() {
-      //1 校验数据
+      // 1. 校验数据
       try {
         await this.$refs.loginForm.validate()
       } catch (error) {
         return console.log(error)
       }
-      // 2发生请求
+      // 2. 发生请求
       this.loading = true
       try {
         await this.$store.dispatch('user/login', this.loginForm)
@@ -129,7 +152,7 @@ export default {
         return console.log(error)
       }
       this.loading = false
-      // 跳转主页
+      // 3. 跳转主页面
       this.$router.push({ path: this.redirect || '/' })
     },
   },
@@ -141,7 +164,7 @@ export default {
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
 $bg: #283443;
-$light_gray: #68b0fe;
+$light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -175,14 +198,21 @@ $cursor: #fff;
       }
     }
   }
-  .el-form-item__error {
-    color: #fff;
-  }
+
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.7); // 输入登录表单的背景色
     border-radius: 5px;
     color: #454545;
+  }
+  .el-form-item__error {
+    color: #fff;
+  }
+  .loginBtn {
+    background: #407ffe;
+    height: 64px;
+    line-height: 32px;
+    font-size: 24px;
   }
 }
 </style>
@@ -190,7 +220,7 @@ $cursor: #fff;
 <style lang="scss" scoped>
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
-$light_gray: #eee;
+$light_gray: #68b0fe;
 
 .login-container {
   min-height: 100%;
@@ -247,13 +277,6 @@ $light_gray: #eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
-  }
-
-  .loginBtn {
-    background: #407ffe;
-    height: 64px;
-    line-height: 32px;
-    font-size: 24px;
   }
 }
 </style>

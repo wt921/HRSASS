@@ -1,41 +1,38 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+
+// 引入多个模块的规则
+import approvalsRouter from './modules/approvals';
+import departmentsRouter from './modules/departments';
+import employeesRouter from './modules/employees';
+import permissionsRouter from './modules/permissions';
+import attendancesRouter from './modules/attendances';
+import salarysRouter from './modules/salarys';
+import settingsRouter from './modules/settings';
+import socialsRouter from './modules/socials';
+
+// 动态路由
+export const asyncRoutes = [
+  approvalsRouter,
+  departmentsRouter,
+  employeesRouter,
+  permissionsRouter,
+  attendancesRouter,
+  salarysRouter,
+  settingsRouter,
+  socialsRouter
+];
+
 Vue.use(Router);
 
 // 导入布局组件
 /* Layout */
 import Layout from '@/layout';
 
-/**
- * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
- *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
- */
 
-/**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
- */
 
-/* 
-静态路由
-一些基础的路由页面不需要设置也可以访问
-所有角色都可以访问 */
+
 export const constantRoutes = [
   {
     path: '/login',
@@ -69,7 +66,7 @@ export const constantRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  routes: [...constantRoutes, ...asyncRoutes]
 });
 
 // 获取到路由实例
