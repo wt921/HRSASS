@@ -8,14 +8,18 @@
         <el-col :span="12">{{ treeNode.manager }}</el-col>
         <el-col :span="12">
           <!-- 下拉菜单 -->
-          <el-dropdown>
+          <el-dropdown @command="clickHandler">
             <span class="el-dropdown-link">
               操作<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>添加子部门</el-dropdown-item>
-              <el-dropdown-item v-if="!isRoot">删除部门</el-dropdown-item>
-              <el-dropdown-item v-if="!isRoot">修改部门</el-dropdown-item>
+              <el-dropdown-item command="add">添加子部门</el-dropdown-item>
+              <el-dropdown-item command="del" v-if="!isRoot"
+                >删除部门</el-dropdown-item
+              >
+              <el-dropdown-item command="edit" v-if="!isRoot"
+                >修改部门</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
@@ -34,7 +38,21 @@ export default {
     },
     isRoot: {
       type: Boolean,
-      required: false,
+      default: false,
+    },
+  },
+  methods: {
+    clickHandler(val) {
+      console.log(val)
+      if (val === 'add') {
+        this.$emit('addDept', this.treeNode)
+      }
+      if (val === 'del') {
+        //   删除
+      }
+      if (val === 'edit') {
+        //    修改
+      }
     },
   },
 }

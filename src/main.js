@@ -19,7 +19,7 @@ import router from './router';
 import '@/icons'; // icon
 // 导入导航权限守卫
 import '@/permission'; // permission control
-
+import '@/utils';
 
 // 读取某个模块里面所以暴露信息
 import * as directive from '@/directive';
