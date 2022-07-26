@@ -86,8 +86,8 @@ import store from '@/store';
 import axios from 'axios';
 import { Message } from 'element-ui';
 import { getTimeStamp } from '@/utils/auth';
-// const timeLen = 2 * 1000 * 60 * 60;  // 2h
-const timeLen = 2 * 1000; // 10s
+const timeLen = 2 * 1000 * 60 * 60;  // 2h
+// const timeLen = 2 * 1000; // 10s
 const checkTimeOut = () => {
   // 判断是否登录失效了
   let nowTime = Date.now();  //发生请求的时间
