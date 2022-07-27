@@ -11,6 +11,8 @@
             slot-scope="{ data }"
             :tree-node="data"
             @addDept="addDept"
+            @editDept="editDept"
+            @UpDateList="initDate"
           ></tree-tools>
           <!-- slot-scope作用域插槽的数据信息：slot-scope 就是组件内部将数据提供给外部
           slot-scope="scope"  就是组件内部提供给外部的数据-->
@@ -19,13 +21,13 @@
     </div>
 
     <!-- 弹框组件 -->
-    <add-dept ref="addDept"> </add-dept>
+    <add-dept ref="addDept" @updateList="initDate"> </add-dept>
     <!-- 弹框组件 -->
   </div>
 </template>
 <script>
 import treeTools from '@/views/departments/components/tree-tools.vue'
-import { getDepartmentListApi } from '@/api/department'
+import { getDepartmentListApi, getDepartmentInfoApi } from '@/api/department'
 import { tranListToTreeDate } from '@/utils'
 import addDept from '@/views/departments/components/add-dept.vue'
 export default {
@@ -38,13 +40,13 @@ export default {
         id: '',
       },
       departs: [
-        {
-          name: '总裁办',
-          manager: '曹操',
-          children: [{ name: '董事会', manager: '曹丕' }],
-        },
-        { name: '行政部', manager: '刘备' },
-        { name: '人事部', manager: '孙权' },
+        // {
+        //   name: '总裁办',
+        //   manager: '曹操',
+        //   children: [{ name: '董事会', manager: '曹丕' }],
+        // },
+        // { name: '行政部', manager: '刘备' },
+        // { name: '人事部', manager: '孙权' },
       ],
       detps: [],
     }
@@ -63,6 +65,12 @@ export default {
     addDept(val) {
       this.$refs.addDept.dialogShow = true
       this.$refs.addDept.formData.pid = val.id
+    },
+    async editDept(id) {
+      const res = await getDepartmentInfoApi(id)
+      // console.log(res)
+      this.$refs.addDept.formData = res
+      this.$refs.addDept.dialogShow = true
     },
   },
 }

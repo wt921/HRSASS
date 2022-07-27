@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { delDepartmentApi } from '@/api/department'
 export default {
   name: 'TreeTools',
   props: {
@@ -42,16 +43,21 @@ export default {
     },
   },
   methods: {
-    clickHandler(val) {
+    async clickHandler(val) {
       console.log(val)
       if (val === 'add') {
         this.$emit('addDept', this.treeNode)
       }
       if (val === 'del') {
         //   删除
+        await this.$confirm('确定要删除吗？')
+        await delDepartmentApi(this.treeNode.id)
+        this.$message.success('删除成功')
+        this.$emit('UpDateList')
       }
       if (val === 'edit') {
         //    修改
+        this.$emit('editDept', this.treeNode.id)
       }
     },
   },
