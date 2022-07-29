@@ -30,9 +30,9 @@ Object.keys(directive).forEach(key => {
   Vue.directive(key, directive[key]);
 });
 // 给element-ui设置英文语言包
-Vue.use(ElementUI, { locale });
+// Vue.use(ElementUI, { locale });
 // 如果想要中文版 element-ui，按如下方式声明
-// Vue.use(ElementUI)
+Vue.use(ElementUI);
 // 控制台版本的提示
 Vue.config.productionTip = false;
 // 实例化vue
