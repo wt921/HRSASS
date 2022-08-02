@@ -20,7 +20,10 @@ import '@/icons'; // icon
 // 导入导航权限守卫
 import '@/permission'; // permission control
 import '@/utils';
-
+// import '@/components';
+//
+import Components from './components';
+Vue.use(Components);
 // 读取某个模块里面所以暴露信息
 import * as directive from '@/directive';
 console.log(directive);
@@ -29,6 +32,15 @@ console.log(directive);
 Object.keys(directive).forEach(key => {
   Vue.directive(key, directive[key]);
 });
+import * as filters from '@/filters';
+
+
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key]);
+});
+
+
 // 给element-ui设置英文语言包
 // Vue.use(ElementUI, { locale });
 // 如果想要中文版 element-ui，按如下方式声明

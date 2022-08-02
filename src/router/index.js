@@ -58,10 +58,20 @@ export const constantRoutes = [
     }]
   },
 
+  {
+    path: '/import',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: '',
 
+      component: () => import('@/views/import'),
+    }]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ];
+
 // 创建一个路由实例 并返回
 const createRouter = () => new Router({
   // mode: 'history', // require service support
