@@ -58,7 +58,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-            <ImageUpload />
+            <ImageUpload ref="ygtx" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -93,7 +93,7 @@
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
 
-          <ImageUpload />
+          <ImageUpload ref="ygzp" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -398,6 +398,7 @@ import {
   updatePersonal,
 } from '@/api/employees'
 export default {
+  name: 'userInfo',
   data() {
     return {
       userId: this.$route.params.id,
@@ -477,16 +478,50 @@ export default {
       let res = await getEmployeeInfoApi(this.userId)
       let res2 = await getPersonalDetail(this.userId)
       this.userInfo = res
+      console.log(this.userInfo)
       this.formData = res2
+      if (this.userInfo.staffPhoto.trim() !== '') {
+        this.$refs.ygtx.fileList = [
+          { name: '', url: this.userInfo.staffPhoto, upload: true },
+        ]
+      }
+      if (this.formData.staffPhoto.trim() !== '') {
+        this.$refs.ygzp.fileList = [
+          { name: '', url: this.formData.staffPhoto, upload: true },
+        ]
+      }
     },
     // 保存简单个人信息
     async saveUser() {
+      // 判断是否有值
+      if (this.$refs.ygtx.fileList.length) {
+        // 判断是否有值再上传
+        const isUploading = this.$refs.ygtx.fileList.some(
+          (item) => !item.upload
+        )
+        if (isUploading) return this.$message.warning('图片正在上传')
+        this.userInfo.staffPhoto = this.$refs.ygtx.fileList[0].url
+      } else {
+        this.userInfo.staffPhoto = ''
+      }
       await editEmployeeApi(this.userInfo)
       this.$message.success('更新成功')
       this.$emit('upDataUser')
     },
     // 保存个人信息详细
     async savePersonal() {
+      if (this.$refs.ygzp.fileList.length) {
+        // 判断是否有值再上传
+        const isUploading = this.$refs.ygzp.fileList.some(
+          (item) => !item.upload
+        )
+        if (isUploading) return this.$message.warning('图片正在上传')
+        this.formData.staffPhoto = this.$refs.ygzp.fileList[0].url
+      } else {
+        // 没有值写入一个空格
+        this.formData.staffPhoto = ''
+      }
+
       await updatePersonal(this.formData)
       this.$message.success('保存成功')
     },

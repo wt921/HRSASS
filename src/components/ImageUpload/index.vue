@@ -10,9 +10,15 @@
       :before-upload="beforeUpload"
       :file-list="fileList"
       :http-request="httpRequest"
+      :class="{ hidden: fileList.length === uploadMaxNum }"
     >
       <i class="el-icon-plus" />
     </el-upload>
+    <el-progress
+      v-if="showPercent"
+      style="width: 180px"
+      :percentage="percent"
+    />
     <el-dialog title="添加图片" :visible.sync="dialogShow" width="600px">
       <img :src="imgUrl" alt="" width="100%" />
     </el-dialog>
@@ -28,20 +34,20 @@ var cos = new COS({
 })
 export default {
   name: 'imageUpload',
+  props: {
+    uploadMaxNum: {
+      type: Number,
+      default: 1,
+    },
+  },
   data() {
     return {
       imgUrl: '',
       dialogShow: false,
-      fileList: [
-        {
-          name: '1111',
-          url: 'http://yun.itheima.com/Upload/Images/20220722/62da600e97fcf.jpg',
-        },
-        {
-          name: '222',
-          url: 'https://www.itheima.com/2020gw/images/indeximg/mapxmt.png',
-        },
-      ],
+      fileList: [],
+      currentFileUid: '', //记录正在上传的这个文件的uid
+      percent: 0,
+      showPercent: false, // 默认不显示进度条
     }
   },
   methods: {
@@ -74,6 +80,10 @@ export default {
         this.$message.warning('格式不正确')
         return false
       }
+      // 走到这里可以实现上传操作
+      this.currentFileUid = file.uid
+      this.showPercent = true
+      this.percent = 0
       return true
     },
     async httpRequest({ file }) {
@@ -93,17 +103,42 @@ export default {
           // 进度条
           onProgress: (progressData) => {
             console.log(JSON.stringify(progressData))
+            this.percent = progressData.percent * 100
           },
         },
-        function (err, data) {
-          console.log(err || data)
-          console.log(data.Location)
+        (err, data) => {
+          if (err) {
+            console.log(err)
+            return this.$message.error('上传失败')
+          }
+          this.fileList = this.fileList.map((item) => {
+            if (item.uid === this.currentFileUid) {
+              item.url = 'http://' + data.Location
+              console.log(data.Location)
+              item.upload = true
+            }
+            return item
+          })
+          this.currentFileUid = ''
+          // 延迟关闭
+          setTimeout(() => {
+            this.showPercent = false
+          })
         }
+        // function (err, data) {
+        //   console.log(err || data)
+        //   console.log(data.Location)
+        // }
       )
     },
   },
 }
 </script>
 
-<style>
+<style scoped lang="scss">
+::v-deep .hidden {
+  .el-upload {
+    display: none;
+  }
+}
 </style>

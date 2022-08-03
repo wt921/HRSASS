@@ -29,9 +29,23 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="个人详情">
+            <el-row type="flex" justify="end">
+              <el-tooltip content="打印个人基本信息">
+                <router-link :to="`/employees/print/${userId}?type=personal`">
+                  <i class="el-icon-printer" />
+                </router-link>
+              </el-tooltip>
+            </el-row>
             <userInfo @upDataUse="initData" />
           </el-tab-pane>
           <el-tab-pane label="岗位信息">
+            <el-row type="flex" justify="end">
+              <el-tooltip content="打印岗位信息">
+                <router-link :to="`/employees/print/${userId}?type=job`">
+                  <i class="el-icon-printer" />
+                </router-link>
+              </el-tooltip>
+            </el-row>
             <jobInfo />
           </el-tab-pane>
         </el-tabs>
@@ -47,7 +61,7 @@ import jobInfo from './job-info.vue'
 export default {
   data() {
     return {
-      UserId: this.$route.params.id,
+      userId: this.$route.params.id,
       formData: {
         username: '',
         password2: '',
@@ -69,7 +83,7 @@ export default {
   },
   methods: {
     async initData() {
-      const res = await getEmployeeInfoApi(this.UserId)
+      const res = await getEmployeeInfoApi(this.userId)
       console.log(res)
       this.formData = res
     },

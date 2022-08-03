@@ -33,6 +33,17 @@
           <el-table-column type="selection" />
           <el-table-column label="序号" sortable="" type="index" />
           <el-table-column label="姓名" sortable="" prop="username" />
+          <el-table-column label="头像" sortable="">
+            <template #default="{ row }">
+              <img
+                :src="row.staffPhoto"
+                alt=""
+                style="height: 100px"
+                v-imgerror="require('@/assets/common/bigUserHeader.png')"
+                @click="imgClickHandler(row.staffPhoto)"
+              />
+            </template>
+          </el-table-column>
           <el-table-column label="工号" sortable="" prop="workNumber" />
           <el-table-column
             label="聘用形式"
@@ -88,6 +99,9 @@
       </el-card>
     </div>
     <AddEmploy ref="addEmploy" @updataList="initData"></AddEmploy>
+    <el-dialog title="查看二维码" :visible.sync="dialogShow">
+      <canvas ref="canvas"></canvas>
+    </el-dialog>
   </div>
 </template>
 
@@ -96,7 +110,9 @@ import AddEmploy from './components/addEmply.vue'
 import EmployeesConst from '@/api/constant/employees'
 import { getEmployeeListApi, delEmployeeApi } from '@/api/employees'
 import { formatDate } from '@/filters'
+import Qrcode from 'qrcode'
 export default {
+  name: 'employIndex',
   data() {
     return {
       list: [],
@@ -106,6 +122,7 @@ export default {
         size: 10,
       },
       total: 0,
+      dialogShow: false,
     }
   },
   components: { AddEmploy },
@@ -208,6 +225,19 @@ export default {
       })
 
       return { list: arr, tableHeader: Object.keys(headers) }
+    },
+    imgClickHandler(url) {
+      if (url.trim === '') return
+      this.dialogShow = true
+      this.$nextTick(() => {
+        // 此时可以确认已经有ref对象了
+
+        console.log(this.$refs.canvas)
+        Qrcode.toCanvas(this.$refs.canvas, url, (error) => {
+          if (error) return this.$message.fail('生成二维码失败')
+        }) // 将地址转化成二维码
+        // 如果转化的二维码后面信息 是一个地址的话 就会跳转到该地址 如果不是地址就会显示内容
+      })
     },
   },
 }
