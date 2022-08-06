@@ -69,7 +69,12 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click="assignRoleHandler(row)"
+                >角色</el-button
+              >
               <el-button type="text" size="small" @click="delHandler(row.id)"
                 >删除</el-button
               >
@@ -99,18 +104,26 @@
       </el-card>
     </div>
     <AddEmploy ref="addEmploy" @updataList="initData"></AddEmploy>
+
     <el-dialog title="查看二维码" :visible.sync="dialogShow">
       <canvas ref="canvas"></canvas>
     </el-dialog>
+    <!-- 关联角色 -->
+    <AssignRole ref="assignRole" />
   </div>
 </template>
 
 <script>
 import AddEmploy from './components/addEmply.vue'
 import EmployeesConst from '@/api/constant/employees'
-import { getEmployeeListApi, delEmployeeApi } from '@/api/employees'
+import {
+  getEmployeeListApi,
+  delEmployeeApi,
+  getEmployeeInfoApi,
+} from '@/api/employees'
 import { formatDate } from '@/filters'
 import Qrcode from 'qrcode'
+import AssignRole from './components/assign-role.vue'
 export default {
   name: 'employIndex',
   data() {
@@ -125,7 +138,7 @@ export default {
       dialogShow: false,
     }
   },
-  components: { AddEmploy },
+  components: { AddEmploy, AssignRole },
   created() {
     this.initData()
   },
@@ -232,12 +245,19 @@ export default {
       this.$nextTick(() => {
         // 此时可以确认已经有ref对象了
 
-        console.log(this.$refs.canvas)
+        // console.log(this.$refs.canvas)
         Qrcode.toCanvas(this.$refs.canvas, url, (error) => {
           if (error) return this.$message.fail('生成二维码失败')
         }) // 将地址转化成二维码
         // 如果转化的二维码后面信息 是一个地址的话 就会跳转到该地址 如果不是地址就会显示内容
       })
+    },
+    async assignRoleHandler(val) {
+      let res = await getEmployeeInfoApi(val.id)
+      console.log('res', res)
+      this.$refs.assignRole.checkRoleList = res.roleIds
+      this.$refs.assignRole.userId = val.id
+      this.$refs.assignRole.showRoleDialog = true
     },
   },
 }

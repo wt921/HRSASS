@@ -41,7 +41,8 @@ module.exports = {
     // before: require('./mock/mock-server.js')
     proxy: {
       '/api': {
-        target: 'http://ihrm.itheima.net/', // 跨域请求的地址
+        // target: 'http://ihrm.itheima.net/', // 跨域请求的地址
+        target: 'http://192.168.19.134:3000/', // 跨域请求的地址
         changeOrigin: true,// 只有这个值为true的情况下 才表示开启跨域
       }
     }

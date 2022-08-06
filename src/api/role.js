@@ -46,3 +46,11 @@ export const getCompanyInfoApi = (id) => {
         method: "get"
     });
 };
+// 给角色分配权限
+export const assignAuthApi = (data) => {
+    return request({
+        url: '/sys/role/assignPrem',
+        method: "put",
+        data
+    });
+};

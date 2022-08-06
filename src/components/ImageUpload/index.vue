@@ -123,7 +123,7 @@ export default {
           // 延迟关闭
           setTimeout(() => {
             this.showPercent = false
-          })
+          }, 400)
         }
         // function (err, data) {
         //   console.log(err || data)

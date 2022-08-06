@@ -10,12 +10,19 @@ router.beforeEach(async(to, from, next) => {
         if (to.path === '/login') {
             next('/');
         } else {
+            // 判断是否有用户资料
             if (!store.getters.userId) {
-                await store.dispatch('user/getUserInfo')
+                // 读取角色信息
+                let { roles } = await store.dispatch('user/getUserInfo')
+            // 调用过滤筛选动态路由的action 传入菜单权限标识
+                let routes =await store.dispatch('permission/filterRoutes',roles.menus)
+                // 得到动态路由映射 添加路由实例中
+                router.addRoutes(routes)
+                next(to.path);
+            } else {
+                next();
             }
-
-            
-            next();
+          
         }
     } else {
         if (whiteList.includes(to.path)) {

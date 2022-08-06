@@ -39,7 +39,9 @@
               </el-table-column>
               <el-table-column label="操作" align="center">
                 <template slot-scope="{ row }">
-                  <el-button type="success">分配权限</el-button>
+                  <el-button type="success" @click="setAuth(row.id)"
+                    >分配权限</el-button
+                  >
                   <el-button type="primary" @click="editHandler(row.id)"
                     >编辑</el-button
                   >
@@ -108,11 +110,15 @@
     </div>
     <!-- 弹框 -->
     <add-role @upDataList="initData" ref="addRole"></add-role>
+
+    <!-- 关联权限 -->
+    <assignAuth ref="assignAuth" />
   </div>
 </template>
 
 <script>
 import addRole from '@/views/settings/components/add-role.vue'
+import assignAuth from './components/assign-auth.vue'
 import {
   getRoleListApi,
   getCompanyInfoApi,
@@ -135,6 +141,7 @@ export default {
   },
   components: {
     addRole,
+    assignAuth,
   },
   created() {
     this.initData()
@@ -173,6 +180,13 @@ export default {
         this.queryData.page--
       }
       this.initData()
+    },
+    async setAuth(id) {
+      let res = await getRoleInfoApi(id)
+      console.log(res)
+      this.$refs.assignAuth.checkAuthId = res.permIds
+      this.$refs.assignAuth.dialogShow = true
+      this.$refs.assignAuth.roleId = id
     },
   },
 }

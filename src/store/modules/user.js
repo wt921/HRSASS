@@ -44,6 +44,7 @@ const actions = {
     let res2 = await getUserBaseInfoApi(res.userId);
     // 获取员工基本信息
     context.commit('setUserInfo', { ...res, ...res2 });
+    return { ...res, ...res2 };
   },
   // 退出
   async quit({ commit }) {
